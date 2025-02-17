@@ -98,6 +98,10 @@ sealed public interface CustomAdvancementDisplay permits CustomAdvancementDispla
 
         /**
          * Sets the icon for the advancement using a material type.
+         * <p>
+         * This is a convenience method that creates an {@link ItemStack} from the given {@link Material}
+         * and adds it as a reward.
+         * </p>
          *
          * @param icon the {@link Material} to use as the icon
          * @return this builder instance for chaining
@@ -107,7 +111,11 @@ sealed public interface CustomAdvancementDisplay permits CustomAdvancementDispla
         }
 
         /**
-         * Sets the icon for the advancement and allows modification of the {@link ItemStack}.
+         * Sets the icon for the advancement after applying modifications via a consumer.
+         * <p>
+         * This method allows modifications to be applied to the {@link ItemStack} before it is set.
+         * The provided {@code consumer} can modify the item, for example, by setting enchantments, or other metadata.
+         * </p>
          *
          * @param item     the {@link ItemStack} to be used as the icon
          * @param consumer a consumer to modify the {@link ItemStack}

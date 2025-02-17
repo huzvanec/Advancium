@@ -8,6 +8,7 @@ import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Unmodifiable;
@@ -181,12 +182,15 @@ final class CustomAdvancementImpl implements CustomAdvancement {
 
     static final class Builder implements CustomAdvancement.Builder {
         private final NamespacedKey key;
-        private final List<EventRegistration<? extends Event>> eventRegistrations = new ArrayList<>();
 
         private CustomAdvancementDisplay display = CustomAdvancementDisplay.empty();
         private CustomAdvancementRewards rewards = CustomAdvancementRewards.empty();
         private Set<String> criteria = Set.of("dummy");
         private Set<Set<String>> requirements = Set.of(Set.of("dummy"));
+
+        private final List<EventRegistration<? extends Event>> eventRegistrations = new ArrayList<>();
+        private final List<BiConsumer<PlayerAdvancementCriterionGrantEvent, CustomAdvancement>> criterionGrantedHandlers = new ArrayList<>();
+        private final List<BiConsumer<PlayerAdvancementCriterionGrantEvent, CustomAdvancement>> advancementCompletedHandlers = new ArrayList<>();
 
         public Builder(final NamespacedKey key) {
             this.key = key;
@@ -231,36 +235,63 @@ final class CustomAdvancementImpl implements CustomAdvancement {
 
         @Override
         public CustomAdvancement.Builder onCriterionGranted(final BiConsumer<PlayerAdvancementCriterionGrantEvent, CustomAdvancement> handler) {
-            return on(
+            criterionGrantedHandlers.add(handler);
+            return this;
+        }
+
+        @Override
+        public CustomAdvancement.Builder onAdvancementCompleted(final BiConsumer<PlayerAdvancementCriterionGrantEvent, CustomAdvancement> handler) {
+            advancementCompletedHandlers.add(handler);
+            return this;
+        }
+
+        private void registerCriterionEvents() {
+            // Accessing loot directly
+            // If not done with enough care, this could mutate CustomAdvancementRewards!
+            final List<ItemStack> unsafeLootRewards = ((CustomAdvancementRewardsImpl) rewards).loot;
+            if (
+                    criterionGrantedHandlers.isEmpty() &&
+                    advancementCompletedHandlers.isEmpty() &&
+                    unsafeLootRewards.isEmpty()
+            ) return; // Just a slight optimization
+            on(
                     PlayerAdvancementCriterionGrantEvent.class,
                     EventPriority.NORMAL,
                     (event, advancement) -> {
-                        if (event.getAdvancement().getKey().equals(key))
-                            handler.accept(event, advancement);
+                        if (!event.getAdvancement().getKey().equals(key)) return;
+                        criterionGrantedHandlers.forEach(
+                                handler -> handler.accept(event, advancement)
+                        );
+                        if (!event.getAdvancementProgress().isDone()) return;
+                        advancementCompletedHandlers.forEach(
+                                handler -> handler.accept(event, advancement)
+                        );
+                        if (event.isCancelled()) return;
+                        final Player player = event.getPlayer();
+                        final Collection<ItemStack> overflow = player.getInventory().addItem(
+                                unsafeLootRewards.toArray(new ItemStack[0])
+                        ).values();
+                        for (final ItemStack item : overflow)
+                            player.getWorld().dropItem(player.getLocation(), item);
                     }
             );
         }
 
         @Override
-        public CustomAdvancement.Builder onAdvancementCompleted(final BiConsumer<PlayerAdvancementCriterionGrantEvent, CustomAdvancement> handler) {
-            return onCriterionGranted((event, advancement) -> {
-                if (event.getAdvancementProgress().isDone())
-                    handler.accept(event, advancement);
-            });
-        }
-
-        @Override
         public CustomAdvancement buildAndBindTo(final CustomAdvancement parent) {
+            registerCriterionEvents();
             return new CustomAdvancementImpl(this, parent);
         }
 
         @Override
         public CustomAdvancement buildAndBindToBukkit(final NamespacedKey key, final Plugin plugin) {
+            registerCriterionEvents();
             return new CustomAdvancementImpl(this, key, plugin);
         }
 
         @ApiStatus.Internal
         CustomAdvancement buildRoot(final CustomAdvancementTab tab) {
+            registerCriterionEvents();
             return new CustomAdvancementImpl(this, tab);
         }
     }

@@ -3,7 +3,9 @@ package cz.jeme.advancium;
 import net.kyori.adventure.key.KeyPattern;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.loot.LootTable;
 import org.jetbrains.annotations.NotNull;
@@ -12,6 +14,7 @@ import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * Represents the rewards granted upon completing a custom advancement.
@@ -97,6 +100,17 @@ public interface CustomAdvancementRewards {
     }
 
     /**
+     * Returns a deep-copied, immutable list of loot granted as rewards.
+     * <p>
+     * Each {@link ItemStack} in the returned list is cloned to maintain immutability.
+     * </p>
+     *
+     * @return an unmodifiable list of cloned {@link ItemStack} rewards
+     */
+    @Unmodifiable
+    List<ItemStack> loot();
+
+    /**
      * Builder for constructing instances of {@link CustomAdvancementRewards}.
      */
     interface Builder {
@@ -169,6 +183,48 @@ public interface CustomAdvancementRewards {
          */
         default Builder addLootTable(final @KeyPattern String key) {
             return addLootTable(Objects.requireNonNull(NamespacedKey.fromString(key), "Invalid key: \"" + key + "\""));
+        }
+
+        /**
+         * Adds an {@link ItemStack} to the list of loot rewards for this advancement.
+         * <p>
+         * The provided {@link ItemStack} is added as a reward when this advancement is granted.
+         * </p>
+         *
+         * @param item the {@link ItemStack} to add as loot
+         * @return this builder instance for chaining
+         */
+        Builder addLoot(final ItemStack item);
+
+        /**
+         * Adds an {@link ItemStack} of the specified {@link Material} to the loot rewards.
+         * <p>
+         * This is a convenience method that creates an {@link ItemStack} from the given {@link Material}
+         * and adds it as a reward.
+         * </p>
+         *
+         * @param material the {@link Material} to create an {@link ItemStack} from
+         * @return this builder instance for chaining
+         */
+        default Builder addLoot(final Material material) {
+            return addLoot(ItemStack.of(material));
+        }
+
+        /**
+         * Adds an {@link ItemStack} to the loot rewards after applying modifications via a consumer.
+         * <p>
+         * This method allows modifications to be applied to the {@link ItemStack} before it is added.
+         * The provided {@code consumer} can modify the item, for example, by setting enchantments,
+         * custom names, or other metadata.
+         * </p>
+         *
+         * @param item     the {@link ItemStack} to add as loot
+         * @param consumer a {@link Consumer} that modifies the {@link ItemStack} before it is added
+         * @return this builder instance for chaining
+         */
+        default Builder addLoot(final ItemStack item, final Consumer<ItemStack> consumer) {
+            consumer.accept(item);
+            return addLoot(item);
         }
 
         /**

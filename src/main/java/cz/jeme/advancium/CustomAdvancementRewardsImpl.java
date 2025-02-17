@@ -1,6 +1,8 @@
 package cz.jeme.advancium;
 
 import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
@@ -15,12 +17,25 @@ final class CustomAdvancementRewardsImpl implements CustomAdvancementRewards {
 
     private final int experience;
     private final List<NamespacedKey> recipeKeys;
-    private final List<NamespacedKey> lootKeys;
+    private final List<NamespacedKey> lootTableKeys;
+    /**
+     * A {@link List} of {@link ItemStack}s that represents the concrete loot rewards of an advancement.
+     * <p>
+     * This list is package-private to optimize loot giving (defensive copies are not created).
+     * </p>
+     *
+     * @see CustomAdvancementImpl.Builder#Builder(NamespacedKey)
+     */
+    @ApiStatus.Internal
+    final List<ItemStack> loot;
 
     private CustomAdvancementRewardsImpl(final Builder builder) {
         experience = builder.experience;
         recipeKeys = Collections.unmodifiableList(builder.recipeKeys);
-        lootKeys = Collections.unmodifiableList(builder.lootKeys);
+        lootTableKeys = Collections.unmodifiableList(builder.lootTableKeys);
+        loot = builder.loot.stream()
+                .map(ItemStack::clone) // defensive copy to ensure immutability
+                .toList();
     }
 
     @Override
@@ -35,13 +50,20 @@ final class CustomAdvancementRewardsImpl implements CustomAdvancementRewards {
 
     @Override
     public @Unmodifiable List<NamespacedKey> lootTableKeys() {
-        return lootKeys;
+        return lootTableKeys;
+    }
+
+    @Override
+    public @Unmodifiable List<ItemStack> loot() {
+        // defensive copy to ensure immutability
+        return loot.stream().map(ItemStack::clone).toList();
     }
 
     static final class Builder implements CustomAdvancementRewards.Builder {
         private int experience = 0;
         private final List<NamespacedKey> recipeKeys = new ArrayList<>();
-        private final List<NamespacedKey> lootKeys = new ArrayList<>();
+        private final List<NamespacedKey> lootTableKeys = new ArrayList<>();
+        private final List<ItemStack> loot = new ArrayList<>();
 
         @Override
         public CustomAdvancementRewards.Builder experience(final int experience) {
@@ -57,7 +79,13 @@ final class CustomAdvancementRewardsImpl implements CustomAdvancementRewards {
 
         @Override
         public CustomAdvancementRewards.Builder addLootTable(final NamespacedKey key) {
-            lootKeys.add(key);
+            lootTableKeys.add(key);
+            return this;
+        }
+
+        @Override
+        public CustomAdvancementRewards.Builder addLoot(final ItemStack item) {
+            loot.add(item);
             return this;
         }
 
