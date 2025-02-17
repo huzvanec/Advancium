@@ -1,5 +1,6 @@
 package cz.jeme.advancium;
 
+import com.destroystokyo.paper.event.player.PlayerAdvancementCriterionGrantEvent;
 import net.kyori.adventure.key.KeyPattern;
 import org.bukkit.NamespacedKey;
 import org.bukkit.advancement.Advancement;
@@ -276,6 +277,29 @@ public sealed interface CustomAdvancement extends Keyed permits CustomAdvancemen
         default <T extends Event> Builder on(final Class<T> eventClass, final BiConsumer<T, CustomAdvancement> handler) {
             return on(eventClass, EventPriority.NORMAL, handler);
         }
+
+        /**
+         * Adds an event handler that fires when a player is granted any criterion of this advancement.
+         * <p>
+         * This event is registered with the priority {@link EventPriority#NORMAL}.
+         * </p>
+         *
+         * @param handler the handler executed when the event occurs
+         * @return this builder instance for chaining
+         */
+        Builder onCriterionGranted(final BiConsumer<PlayerAdvancementCriterionGrantEvent, CustomAdvancement> handler);
+
+        /**
+         * Adds an event handler that fires when a player completes this advancement
+         * (i.e., when they have acquired all required criteria).
+         * <p>
+         * This event is registered with the priority {@link EventPriority#NORMAL}.
+         * </p>
+         *
+         * @param handler the handler executed when the event occurs
+         * @return this builder instance for chaining
+         */
+        Builder onAdvancementCompleted(final BiConsumer<PlayerAdvancementCriterionGrantEvent, CustomAdvancement> handler);
 
         /**
          * Builds this advancement and binds it to a specified {@link CustomAdvancement} parent.

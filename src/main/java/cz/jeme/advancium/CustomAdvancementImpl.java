@@ -1,5 +1,6 @@
 package cz.jeme.advancium;
 
+import com.destroystokyo.paper.event.player.PlayerAdvancementCriterionGrantEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.advancement.Advancement;
@@ -226,6 +227,26 @@ final class CustomAdvancementImpl implements CustomAdvancement {
                     handler
             ));
             return this;
+        }
+
+        @Override
+        public CustomAdvancement.Builder onCriterionGranted(final BiConsumer<PlayerAdvancementCriterionGrantEvent, CustomAdvancement> handler) {
+            return on(
+                    PlayerAdvancementCriterionGrantEvent.class,
+                    EventPriority.NORMAL,
+                    (event, advancement) -> {
+                        if (event.getAdvancement().getKey().equals(key))
+                            handler.accept(event, advancement);
+                    }
+            );
+        }
+
+        @Override
+        public CustomAdvancement.Builder onAdvancementCompleted(final BiConsumer<PlayerAdvancementCriterionGrantEvent, CustomAdvancement> handler) {
+            return onCriterionGranted((event, advancement) -> {
+                if (event.getAdvancementProgress().isDone())
+                    handler.accept(event, advancement);
+            });
         }
 
         @Override
