@@ -1,4 +1,4 @@
-package cz.jeme.programu.advancium;
+package cz.jeme.advancium;
 
 import org.bukkit.NamespacedKey;
 import org.jspecify.annotations.NullMarked;

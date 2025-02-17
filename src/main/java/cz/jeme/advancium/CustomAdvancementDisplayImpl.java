@@ -1,4 +1,4 @@
-package cz.jeme.programu.advancium;
+package cz.jeme.advancium;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;

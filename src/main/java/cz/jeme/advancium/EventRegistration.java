@@ -1,4 +1,4 @@
-package cz.jeme.programu.advancium;
+package cz.jeme.advancium;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;

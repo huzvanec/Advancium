@@ -1,4 +1,4 @@
-package cz.jeme.programu.advancium;
+package cz.jeme.advancium;
 
 import net.kyori.adventure.key.KeyPattern;
 import org.bukkit.Bukkit;

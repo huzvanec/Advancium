@@ -1,4 +1,4 @@
-package cz.jeme.programu.advancium;
+package cz.jeme.advancium;
 
 import com.google.gson.Gson;
 import net.kyori.adventure.text.serializer.json.JSONComponentSerializer;

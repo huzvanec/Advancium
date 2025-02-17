@@ -5,4 +5,4 @@
  * and configure reward structures.
  * </p>
  */
-package cz.jeme.programu.advancium;
+package cz.jeme.advancium;
