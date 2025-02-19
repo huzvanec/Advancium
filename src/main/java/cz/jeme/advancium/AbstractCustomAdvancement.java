@@ -11,15 +11,14 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
-import org.jspecify.annotations.NullMarked;
-import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
-@NullMarked
 sealed abstract class AbstractCustomAdvancement implements CustomAdvancement permits BaseCustomAdvancement, RootCustomAdvancement, BukkitCustomAdvancement {
     protected final Plugin plugin;
     protected final NamespacedKey key;
@@ -28,7 +27,7 @@ sealed abstract class AbstractCustomAdvancement implements CustomAdvancement per
     protected final Set<String> criteria;
     protected final Set<Set<String>> requirements;
 
-    private @Nullable Advancement lazyBukkit;
+    private @Nullable Advancement bukkit;
 
     protected AbstractCustomAdvancement(final Builder builder, final Plugin plugin) {
         this.plugin = plugin;
@@ -51,18 +50,21 @@ sealed abstract class AbstractCustomAdvancement implements CustomAdvancement per
                         }
                 )
         );
+    }
 
-        AdvancementLoader.INSTANCE.load(this);
+    @ApiStatus.Internal
+    void load() {
+        bukkit = AdvancementLoader.INSTANCE.load(this);
     }
 
     @Override
     public Advancement asBukkit() {
-        if (lazyBukkit == null)
-            lazyBukkit = Objects.requireNonNull(
+        if (bukkit == null)
+            bukkit = Objects.requireNonNull(
                     Bukkit.getAdvancement(key),
                     "Could not obtain Bukkit representation of this custom advancement, this advancement is not loaded to the server"
             );
-        return lazyBukkit;
+        return bukkit;
     }
 
     @Override
@@ -197,22 +199,25 @@ sealed abstract class AbstractCustomAdvancement implements CustomAdvancement per
             );
         }
 
+        private <T extends AbstractCustomAdvancement> @NotNull T buildAndLoad(final @NotNull T advancement) {
+            registerCriterionEvents();
+            advancement.load();
+            return advancement;
+        }
+
         @Override
         public CustomAdvancement buildAndBindTo(final CustomAdvancement parent) {
-            registerCriterionEvents();
-            return new BaseCustomAdvancement(this, parent);
+            return buildAndLoad(new BaseCustomAdvancement(this, parent));
         }
 
         @Override
         public CustomAdvancement buildAndBindToBukkit(final NamespacedKey key, final Plugin plugin) {
-            registerCriterionEvents();
-            return new BukkitCustomAdvancement(this, key, plugin);
+            return buildAndLoad(new BukkitCustomAdvancement(this, key, plugin));
         }
 
         @ApiStatus.Internal
         CustomAdvancement buildRoot(final CustomAdvancementTab tab) {
-            registerCriterionEvents();
-            return new RootCustomAdvancement(this, tab);
+            return buildAndLoad(new RootCustomAdvancement(this, tab));
         }
     }
 }

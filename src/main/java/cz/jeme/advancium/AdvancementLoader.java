@@ -5,12 +5,11 @@ import net.kyori.adventure.text.serializer.json.JSONComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.UnsafeValues;
-import org.jspecify.annotations.NullMarked;
+import org.bukkit.advancement.Advancement;
 
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@NullMarked
 enum AdvancementLoader {
     INSTANCE;
 
@@ -19,7 +18,7 @@ enum AdvancementLoader {
     private final JSONComponentSerializer serializer = JSONComponentSerializer.json();
     private final Gson gson = new Gson();
 
-    public void load(final CustomAdvancement advancement) {
+    public Advancement load(final CustomAdvancement advancement) {
 
         final boolean root = advancement.isRoot();
 
@@ -44,7 +43,7 @@ enum AdvancementLoader {
                     rewards.lootTableKeys().stream().map(NamespacedKey::asString).toList()
             );
 
-            final String str = """
+            final String json = """
                     {
                         "parent": %s,
                         "display": {
@@ -83,9 +82,9 @@ enum AdvancementLoader {
                             loot
                     );
 
-            unsafe.loadAdvancement(
+            return unsafe.loadAdvancement(
                     advancement.key(),
-                    str
+                    json
             );
         } catch (final Exception e) {
             throw new RuntimeException("Failed to load advancement: \"" + advancement.key() + "\"", e);
