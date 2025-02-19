@@ -135,6 +135,10 @@ sealed abstract class AbstractCustomAdvancement implements CustomAdvancement per
         @Deprecated
         public CustomAdvancement.Builder criteria(final Set<String> criteria) {
             requirements = criteria.stream()
+                    .peek(criterion -> {
+                        if (criterion.isBlank())
+                            throw new IllegalArgumentException("Empty criterion name");
+                    })
                     .map(Set::of)
                     .collect(Collectors.toSet());
             return this;
@@ -142,6 +146,12 @@ sealed abstract class AbstractCustomAdvancement implements CustomAdvancement per
 
         @Override
         public CustomAdvancement.Builder requirements(final Set<Set<String>> requirements) {
+            requirements.forEach(group -> group.forEach(
+                    criterion -> {
+                        if (criterion.isBlank())
+                            throw new IllegalArgumentException("Empty criterion name");
+                    }
+            ));
             this.requirements = requirements;
             return this;
         }

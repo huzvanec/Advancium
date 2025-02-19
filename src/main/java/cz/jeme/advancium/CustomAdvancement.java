@@ -12,9 +12,12 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Represents a custom advancement.
@@ -240,40 +243,53 @@ public sealed interface CustomAdvancement extends Keyed permits AbstractCustomAd
          * Sets the criteria for this advancement.
          * <p>
          * This method automatically updates the requirements so that each criterion forms its own group.
-         * If this behavior is not desired, a subsequent call to {@link #requirements(Set)} should be made
-         * to override the default grouping.
-         * </p>
          * <p>
          * <strong>Default:</strong> {@code Set.of("dummy")}
-         * </p>
          *
          * @param criteria a {@link Set} of criteria names
          * @return this builder instance for chaining
-         * @deprecated in favour of using only {@link #requirements(Set)}, criteria are now auto-generated
+         * @throws IllegalArgumentException if any criterion is empty or contains only whitespace
+         * @deprecated in favour of using {@link #requirements(String, String...)}, criteria are now automatically derived from requirements
          */
         @Deprecated
         Builder criteria(final Set<String> criteria);
 
         /**
-         * Sets the requirements for this advancement by grouping criteria.
+         * Sets the requirements for this advancement with custom groupings.
          * <p>
          * The format and behavior of requirements are explained in detail in {@link CustomAdvancement#requirements()}.
-         * Each inner set represents a requirement group, where completing any criterion within a group
+         * Each inner {@link Set} represents a requirement group, where completing any criterion within a group
          * satisfies that group. The advancement is completed when all groups are satisfied.
-         * </p>
-         * <p>
-         * A call to this method must be made <i>after</i> {@link #criteria(Set)},
-         * as calling {@link #criteria(Set)} afterward will overwrite the requirements.
-         * </p>
          * <p>
          * <strong>Default:</strong> {@code Set.of(Set.of("dummy"))}
-         * </p>
          *
-         * @param requirements a set of grouped criteria requirements
+         * @param requirements a {@link Set} of grouped criteria requirements
          * @return this builder instance for chaining
+         * @throws IllegalArgumentException if any criterion is empty or contains only whitespace
          * @see CustomAdvancement#requirements()
          */
         Builder requirements(final Set<Set<String>> requirements);
+
+        /**
+         * Sets the requirements for this advancement, where each provided criterion forms its own group.
+         * <p>
+         * This means that all of the specified criteria must be completed in order to unlock the advancement.
+         * <p>
+         * For more advanced configuration with grouped requirements, use {@link #requirements(Set)}.
+         *
+         * @param first the first criterion, forming its own group
+         * @param other other additional criteria, each forming its own group (optional)
+         * @return this builder instance for chaining
+         * @throws IllegalArgumentException if any criterion is empty or contains only whitespace
+         * @see #requirements(Set)
+         */
+        default Builder requirements(final String first, final String... other) {
+            return requirements(
+                    Stream.concat(Stream.of(first), Arrays.stream(other))
+                            .map(Set::of)
+                            .collect(Collectors.toSet())
+            );
+        }
 
         /**
          * Adds an event handler for this advancement.
