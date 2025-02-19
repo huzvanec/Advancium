@@ -22,7 +22,7 @@ import java.util.function.BiConsumer;
  * A custom advancement defines a unique milestone or task for players to achieve.
  */
 @NullMarked
-public sealed interface CustomAdvancement extends Keyed permits CustomAdvancementImpl {
+public sealed interface CustomAdvancement extends Keyed permits AbstractCustomAdvancement {
     /**
      * Creates a new builder for a {@link CustomAdvancement} using the given {@link NamespacedKey}.
      *
@@ -31,7 +31,7 @@ public sealed interface CustomAdvancement extends Keyed permits CustomAdvancemen
      * @see NamespacedKey#NamespacedKey(Plugin, String)
      */
     static Builder advancement(final NamespacedKey key) {
-        return new CustomAdvancementImpl.Builder(key);
+        return new AbstractCustomAdvancement.Builder(key);
     }
 
     /**
@@ -165,7 +165,7 @@ public sealed interface CustomAdvancement extends Keyed permits CustomAdvancemen
     /**
      * Builder for creating and configuring instances of {@link CustomAdvancement}.
      */
-    sealed interface Builder permits CustomAdvancementImpl.Builder {
+    sealed interface Builder permits AbstractCustomAdvancement.Builder {
         /**
          * Sets the display properties of the advancement.
          * <p>

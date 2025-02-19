@@ -16,7 +16,7 @@ final class CustomAdvancementTabImpl implements CustomAdvancementTab {
     private CustomAdvancementTabImpl(final Builder builder) {
         plugin = builder.plugin;
         background = builder.background;
-        root = ((CustomAdvancementImpl.Builder) Objects.requireNonNull(
+        root = ((BaseCustomAdvancement.Builder) Objects.requireNonNull(
                 builder.rootBuilder,
                 "You must specify root advancement when creating an advancement tab"
         )).buildRoot(this);

@@ -23,7 +23,7 @@ final class CustomAdvancementRewardsImpl implements CustomAdvancementRewards {
      * This list is package-private to optimize loot giving (defensive copies are not created).
      * </p>
      *
-     * @see CustomAdvancementImpl.Builder#Builder(NamespacedKey)
+     * @see BaseCustomAdvancement.Builder#Builder(NamespacedKey)
      */
     @ApiStatus.Internal
     final List<ItemStack> loot;
