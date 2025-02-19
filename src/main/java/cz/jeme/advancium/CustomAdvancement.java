@@ -135,7 +135,13 @@ public sealed interface CustomAdvancement extends Keyed permits AbstractCustomAd
     Advancement asBukkit();
 
     /**
-     * Checks whether this custom advancement is a root advancement.
+     * Checks whether this custom advancement is a root custom advancement.
+     * <p>
+     * Returns {@code false} if this advancement has a custom advancement parent.
+     * <p>
+     * Returns {@code true} if this advancement is a root custom advancement.
+     * <p>
+     * Returns {@code false} if this advancement has a Bukkit parent.
      *
      * @return {@code true} if this advancement is a root advancement, otherwise {@code false}.
      */
@@ -143,6 +149,12 @@ public sealed interface CustomAdvancement extends Keyed permits AbstractCustomAd
 
     /**
      * Checks whether this custom advancement has a {@link CustomAdvancement} parent.
+     * <p>
+     * Returns {@code true} if this advancement has a custom advancement parent.
+     * <p>
+     * Returns {@code false} if this advancement is a root custom advancement.
+     * <p>
+     * Returns {@code false} if this advancement has a Bukkit parent.
      *
      * @return {@code true} if this advancement has a parent and it is a {@link CustomAdvancement}, otherwise {@code false}
      */
@@ -150,6 +162,12 @@ public sealed interface CustomAdvancement extends Keyed permits AbstractCustomAd
 
     /**
      * Checks whether this custom advancement belongs to a {@link CustomAdvancementTab}.
+     * <p>
+     * Returns {@code true} if this advancement has a custom advancement parent.
+     * <p>
+     * Returns {@code true} if this advancement is a root custom advancement.
+     * <p>
+     * Returns {@code false} if this advancement has a Bukkit parent.
      *
      * @return {@code} true if this advancement has a custom advancement tab, otherwise {@code false}
      */
