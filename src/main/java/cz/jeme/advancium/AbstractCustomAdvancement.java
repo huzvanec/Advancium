@@ -13,6 +13,7 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -26,6 +27,8 @@ sealed abstract class AbstractCustomAdvancement implements CustomAdvancement per
     protected final CustomAdvancementRewards rewards;
     protected final Set<String> criteria;
     protected final Set<Set<String>> requirements;
+
+    private @Nullable Advancement lazyBukkit;
 
     protected AbstractCustomAdvancement(final Builder builder, final Plugin plugin) {
         this.plugin = plugin;
@@ -56,10 +59,12 @@ sealed abstract class AbstractCustomAdvancement implements CustomAdvancement per
 
     @Override
     public Advancement asBukkit() {
-        return Objects.requireNonNull(
-                Bukkit.getAdvancement(key),
-                "This advancement is not loaded to the server"
-        );
+        if (lazyBukkit == null)
+            lazyBukkit = Objects.requireNonNull(
+                    Bukkit.getAdvancement(key),
+                    "Could not obtain Bukkit representation of this custom advancement, this advancement is not loaded to the server"
+            );
+        return lazyBukkit;
     }
 
     @Override
