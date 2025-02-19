@@ -41,9 +41,11 @@ final class CustomAdvancementImpl implements CustomAdvancement {
         key = builder.key;
         display = builder.display;
         rewards = builder.rewards;
-        criteria = Collections.unmodifiableSet(builder.criteria);
         requirements = builder.requirements.stream()
                 .map(Collections::unmodifiableSet)
+                .collect(Collectors.toSet());
+        criteria = requirements.stream()
+                .flatMap(Set::stream)
                 .collect(Collectors.toSet());
 
         register(builder);
@@ -61,9 +63,11 @@ final class CustomAdvancementImpl implements CustomAdvancement {
         key = builder.key;
         display = builder.display;
         rewards = builder.rewards;
-        criteria = Collections.unmodifiableSet(builder.criteria);
         requirements = builder.requirements.stream()
                 .map(Collections::unmodifiableSet)
+                .collect(Collectors.toSet());
+        criteria = requirements.stream()
+                .flatMap(Set::stream)
                 .collect(Collectors.toSet());
 
         register(builder);
@@ -79,9 +83,11 @@ final class CustomAdvancementImpl implements CustomAdvancement {
         key = builder.key;
         display = builder.display;
         rewards = builder.rewards;
-        criteria = Collections.unmodifiableSet(builder.criteria);
         requirements = builder.requirements.stream()
                 .map(Collections::unmodifiableSet)
+                .collect(Collectors.toSet());
+        criteria = requirements.stream()
+                .flatMap(Set::stream)
                 .collect(Collectors.toSet());
 
         register(builder);
@@ -185,7 +191,6 @@ final class CustomAdvancementImpl implements CustomAdvancement {
 
         private CustomAdvancementDisplay display = CustomAdvancementDisplay.empty();
         private CustomAdvancementRewards rewards = CustomAdvancementRewards.empty();
-        private Set<String> criteria = Set.of("dummy");
         private Set<Set<String>> requirements = Set.of(Set.of("dummy"));
 
         private final List<EventRegistration<? extends Event>> eventRegistrations = new ArrayList<>();
@@ -208,9 +213,10 @@ final class CustomAdvancementImpl implements CustomAdvancement {
             return this;
         }
 
+
         @Override
+        @Deprecated
         public CustomAdvancement.Builder criteria(final Set<String> criteria) {
-            this.criteria = criteria;
             requirements = criteria.stream()
                     .map(Set::of)
                     .collect(Collectors.toSet());

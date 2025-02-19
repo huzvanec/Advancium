@@ -231,7 +231,9 @@ public sealed interface CustomAdvancement extends Keyed permits CustomAdvancemen
          *
          * @param criteria a {@link Set} of criteria names
          * @return this builder instance for chaining
+         * @deprecated in favour of using only {@link #requirements(Set)}, criteria are now auto-generated
          */
+        @Deprecated
         Builder criteria(final Set<String> criteria);
 
         /**
