@@ -36,11 +36,9 @@ sealed abstract class AbstractCustomAdvancement implements CustomAdvancement per
         key = builder.key;
         display = builder.display;
         rewards = builder.rewards;
+        criteria = builder.criteria;
         requirements = builder.requirements.stream()
                 .map(Collections::unmodifiableSet)
-                .collect(Collectors.toSet());
-        criteria = requirements.stream()
-                .flatMap(Set::stream)
                 .collect(Collectors.toSet());
 
         builder.eventRegistrations.forEach(reg ->
@@ -108,7 +106,8 @@ sealed abstract class AbstractCustomAdvancement implements CustomAdvancement per
 
         private CustomAdvancementDisplay display = CustomAdvancementDisplay.empty();
         private CustomAdvancementRewards rewards = CustomAdvancementRewards.empty();
-        private Set<Set<String>> requirements = Set.of(Set.of("dummy"));
+        private @Unmodifiable Set<String> criteria = Set.of("dummy");
+        private Set<Set<String>> requirements = Set.of(criteria);
 
         private final List<EventRegistration<? extends Event>> eventRegistrations = new ArrayList<>();
         private final List<BiConsumer<PlayerAdvancementCriterionGrantEvent, CustomAdvancement>> criterionGrantedHandlers = new ArrayList<>();
@@ -130,28 +129,16 @@ sealed abstract class AbstractCustomAdvancement implements CustomAdvancement per
             return this;
         }
 
-
         @Override
-        @Deprecated
-        public CustomAdvancement.Builder criteria(final Set<String> criteria) {
-            requirements = criteria.stream()
+        public CustomAdvancement.Builder requirements(final Set<Set<String>> requirements) {
+            this.criteria = requirements.stream()
+                    .flatMap(Set::stream)
                     .peek(criterion -> {
                         if (criterion.isBlank())
                             throw new IllegalArgumentException("Empty criterion name");
                     })
-                    .map(Set::of)
                     .collect(Collectors.toSet());
-            return this;
-        }
-
-        @Override
-        public CustomAdvancement.Builder requirements(final Set<Set<String>> requirements) {
-            requirements.forEach(group -> group.forEach(
-                    criterion -> {
-                        if (criterion.isBlank())
-                            throw new IllegalArgumentException("Empty criterion name");
-                    }
-            ));
+            if (criteria.isEmpty()) throw new IllegalArgumentException("No criteria provided");
             this.requirements = requirements;
             return this;
         }

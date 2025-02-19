@@ -248,11 +248,16 @@ public sealed interface CustomAdvancement extends Keyed permits AbstractCustomAd
          *
          * @param criteria a {@link Set} of criteria names
          * @return this builder instance for chaining
-         * @throws IllegalArgumentException if any criterion is empty or contains only whitespace
+         * @throws IllegalArgumentException if no criteria are provided, or if any criterion is empty or contains only whitespace
          * @deprecated in favour of using {@link #requirements(String, String...)}, criteria are now automatically derived from requirements
          */
         @Deprecated
-        Builder criteria(final Set<String> criteria);
+        default Builder criteria(final Set<String> criteria) {
+            return requirements(criteria.stream()
+                    .map(Set::of)
+                    .collect(Collectors.toSet())
+            );
+        }
 
         /**
          * Sets the requirements for this advancement with custom groupings.
@@ -265,7 +270,7 @@ public sealed interface CustomAdvancement extends Keyed permits AbstractCustomAd
          *
          * @param requirements a {@link Set} of grouped criteria requirements
          * @return this builder instance for chaining
-         * @throws IllegalArgumentException if any criterion is empty or contains only whitespace
+         * @throws IllegalArgumentException if no criteria are provided, or if any criterion is empty or contains only whitespace
          * @see CustomAdvancement#requirements()
          */
         Builder requirements(final Set<Set<String>> requirements);
@@ -276,6 +281,8 @@ public sealed interface CustomAdvancement extends Keyed permits AbstractCustomAd
          * This means that all of the specified criteria must be completed in order to unlock the advancement.
          * <p>
          * For more advanced configuration with grouped requirements, use {@link #requirements(Set)}.
+         * <p>
+         * <strong>Default:</strong> {@code "dummy"}
          *
          * @param first the first criterion, forming its own group
          * @param other other additional criteria, each forming its own group (optional)
