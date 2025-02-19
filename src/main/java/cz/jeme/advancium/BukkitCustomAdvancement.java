@@ -3,9 +3,7 @@ package cz.jeme.advancium;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.ApiStatus;
-import org.jspecify.annotations.NullMarked;
 
-@NullMarked
 final class BukkitCustomAdvancement extends AbstractCustomAdvancement {
     private final NamespacedKey parentKey;
 

@@ -10,7 +10,6 @@ import org.bukkit.inventory.Recipe;
 import org.bukkit.loot.LootTable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
-import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 import java.util.Objects;
@@ -23,7 +22,6 @@ import java.util.function.Consumer;
  * This interface provides methods to access and configure these rewards.
  * </p>
  */
-@NullMarked
 public interface CustomAdvancementRewards {
 
     /**

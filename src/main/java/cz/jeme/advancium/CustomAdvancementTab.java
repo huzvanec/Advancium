@@ -3,7 +3,6 @@ package cz.jeme.advancium;
 import net.kyori.adventure.key.KeyPattern;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.Plugin;
-import org.jspecify.annotations.NullMarked;
 
 import java.util.Objects;
 
@@ -14,7 +13,6 @@ import java.util.Objects;
  * <p>
  * All display data for a tab are copied from its root advancement.
  */
-@NullMarked
 public sealed interface CustomAdvancementTab extends Keyed permits CustomAdvancementTabImpl {
 
     /**

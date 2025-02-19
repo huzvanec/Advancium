@@ -2,11 +2,9 @@ package cz.jeme.advancium;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
-import org.jspecify.annotations.NullMarked;
 
 import java.util.function.BiConsumer;
 
-@NullMarked
 record EventRegistration<T extends Event>(
         Class<T> eventClass,
         EventPriority eventPriority,

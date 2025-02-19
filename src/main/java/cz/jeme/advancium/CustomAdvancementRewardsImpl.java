@@ -4,13 +4,11 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Unmodifiable;
-import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@NullMarked
 final class CustomAdvancementRewardsImpl implements CustomAdvancementRewards {
     public static final CustomAdvancementRewardsImpl EMPTY = new CustomAdvancementRewardsImpl(new Builder());
 

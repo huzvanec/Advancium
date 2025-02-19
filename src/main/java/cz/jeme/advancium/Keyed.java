@@ -1,7 +1,6 @@
 package cz.jeme.advancium;
 
 import org.bukkit.NamespacedKey;
-import org.jspecify.annotations.NullMarked;
 
 /**
  * Something that has an associated {@link NamespacedKey}.
@@ -13,7 +12,6 @@ import org.jspecify.annotations.NullMarked;
  * @see org.bukkit.Keyed
  * @see net.kyori.adventure.key.Keyed
  */
-@NullMarked
 public interface Keyed extends net.kyori.adventure.key.Keyed {
     @Override
     NamespacedKey key();

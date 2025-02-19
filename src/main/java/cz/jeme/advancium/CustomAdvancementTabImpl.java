@@ -2,12 +2,10 @@ package cz.jeme.advancium;
 
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.Plugin;
-import org.jspecify.annotations.NullMarked;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-@NullMarked
 final class CustomAdvancementTabImpl implements CustomAdvancementTab {
     private final Plugin plugin;
     private final CustomAdvancement root;
@@ -47,7 +45,7 @@ final class CustomAdvancementTabImpl implements CustomAdvancementTab {
 
         private final Plugin plugin;
         private NamespacedKey background = DEFAULT_BACKGROUND;
-        private CustomAdvancement.@Nullable Builder rootBuilder;
+        private @Nullable CustomAdvancement.Builder rootBuilder;
 
         public Builder(final Plugin plugin) {
             this.plugin = plugin;

@@ -10,7 +10,6 @@ import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Unmodifiable;
-import org.jspecify.annotations.NullMarked;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -24,7 +23,6 @@ import java.util.stream.Stream;
  * <p>
  * A custom advancement defines a unique milestone or task for players to achieve.
  */
-@NullMarked
 public sealed interface CustomAdvancement extends Keyed permits AbstractCustomAdvancement {
     /**
      * Creates a new builder for a {@link CustomAdvancement} using the given {@link NamespacedKey}.

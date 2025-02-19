@@ -3,7 +3,6 @@ package cz.jeme.advancium;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.jspecify.annotations.NullMarked;
 
 import java.util.function.Consumer;
 
@@ -15,7 +14,6 @@ import java.util.function.Consumer;
  * <p>
  * The {@link #icon()} and the {@link #title()} of the root advancement are used in the tab's display data.
  */
-@NullMarked
 sealed public interface CustomAdvancementDisplay permits CustomAdvancementDisplayImpl {
     /**
      * Creates a new builder for configuring and building a {@link CustomAdvancementDisplay}.

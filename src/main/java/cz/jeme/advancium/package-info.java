@@ -5,4 +5,7 @@
  * and configure reward structures.
  * </p>
  */
+@NotNullByDefault
 package cz.jeme.advancium;
+
+import org.jetbrains.annotations.NotNullByDefault;

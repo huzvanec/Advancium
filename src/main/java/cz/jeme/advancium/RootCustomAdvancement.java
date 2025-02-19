@@ -2,9 +2,7 @@ package cz.jeme.advancium;
 
 import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.ApiStatus;
-import org.jspecify.annotations.NullMarked;
 
-@NullMarked
 final class RootCustomAdvancement extends AbstractCustomAdvancement {
     private final CustomAdvancementTab tab;
 

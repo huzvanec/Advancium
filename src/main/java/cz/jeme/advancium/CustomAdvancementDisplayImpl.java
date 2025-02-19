@@ -3,9 +3,7 @@ package cz.jeme.advancium;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.jspecify.annotations.NullMarked;
 
-@NullMarked
 final class CustomAdvancementDisplayImpl implements CustomAdvancementDisplay {
     public static final CustomAdvancementDisplayImpl EMPTY = new CustomAdvancementDisplayImpl(new Builder());
 

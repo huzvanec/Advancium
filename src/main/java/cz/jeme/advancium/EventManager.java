@@ -5,7 +5,6 @@ import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
-import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-@NullMarked
 final class EventManager implements Listener {
     private final Plugin plugin;
     private final Map<Class<? extends Event>, Map<EventPriority, List<Consumer<? extends Event>>>> eventMap = new HashMap<>();
