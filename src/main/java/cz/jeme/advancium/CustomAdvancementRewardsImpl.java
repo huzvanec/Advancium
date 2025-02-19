@@ -3,7 +3,6 @@ package cz.jeme.advancium;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
@@ -72,7 +71,7 @@ final class CustomAdvancementRewardsImpl implements CustomAdvancementRewards {
         }
 
         @Override
-        public CustomAdvancementRewards.Builder addRecipe(final @NotNull NamespacedKey key) {
+        public CustomAdvancementRewards.Builder addRecipe(final NamespacedKey key) {
             recipeKeys.add(key);
             return this;
         }

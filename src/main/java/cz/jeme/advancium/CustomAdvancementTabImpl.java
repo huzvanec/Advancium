@@ -2,7 +2,6 @@ package cz.jeme.advancium;
 
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -39,7 +38,7 @@ final class CustomAdvancementTabImpl implements CustomAdvancementTab {
     }
 
     @Override
-    public @NotNull NamespacedKey key() {
+    public NamespacedKey key() {
         return root.key();
     }
 
