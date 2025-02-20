@@ -39,7 +39,10 @@ sealed abstract class AbstractCustomAdvancement implements CustomAdvancement per
         requirements = builder.requirements.stream()
                 .map(Collections::unmodifiableSet)
                 .collect(Collectors.toSet());
+    }
 
+    @ApiStatus.Internal
+    void register(final Builder builder) {
         builder.eventRegistrations.forEach(reg ->
                 EventManager.forPlugin(plugin).subscribe(
                         reg.eventClass(),
@@ -50,10 +53,7 @@ sealed abstract class AbstractCustomAdvancement implements CustomAdvancement per
                         }
                 )
         );
-    }
 
-    @ApiStatus.Internal
-    void load() {
         bukkit = AdvancementLoader.INSTANCE.load(this);
     }
 
@@ -201,7 +201,7 @@ sealed abstract class AbstractCustomAdvancement implements CustomAdvancement per
 
         private <T extends AbstractCustomAdvancement> @NotNull T buildAndLoad(final @NotNull T advancement) {
             registerCriterionEvents();
-            advancement.load();
+            advancement.register(this);
             return advancement;
         }
 
